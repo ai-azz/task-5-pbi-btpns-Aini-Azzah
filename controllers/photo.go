@@ -6,11 +6,11 @@ import (
 	"net/http"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/temmy-alex/final-assignment/helpers"
+	"github.com/ai-azz/task-5-btpns-Aini-Azzah/helpers"
 
 	"github.com/gin-gonic/gin"
-	"github.com/temmy-alex/final-assignment/database"
-	"github.com/temmy-alex/final-assignment/models"
+	"github.com/ai-azz/task-5-btpns-Aini-Azzah/database"
+	"github.com/ai-azz/task-5-btpns-Aini-Azzah/models"
 )
 
 func ListPhoto(c *gin.Context) {
