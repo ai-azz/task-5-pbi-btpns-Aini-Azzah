@@ -1,26 +1,36 @@
 package database
 
 import (
-    "gorm.io/driver/mysql"
-    "gorm.io/gorm"
+	"fmt"
+	"log"
+
+	"github.com/temmy-alex/final-assignment/models"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
+var (
+	host     = "localhost"
+	password = "root"
+	dbPort   = "5432"
+	dbname   = "finalassignment"
+	db       *gorm.DB
+	err      error
+)
 
-func ConfigureDatabase() (*gorm.DB, error) {
-    dsn := "root:@tcp(localhost:3306)/task-5-pbi?charset=utf8mb4&parseTime=True&loc=Local"
+func StartDB() {
+	config := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", host, user, password, dbname, dbPort)
+	dsn := config
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
-    db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-    if err != nil {
-        return nil, err
-    }
+	if err != nil {
+		log.Fatal("Error connecting to database : ", err)
+	}
 
-    DB = db
-
-    return db, nil
+	fmt.Println("Connection success to database")
+	db.Debug().AutoMigrate(models.User{}, models.Photo{})
 }
 
-
 func GetDB() *gorm.DB {
-    return DB
+	return db
 }
