@@ -6,9 +6,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/temmy-alex/final-assignment/database"
-	"github.com/temmy-alex/final-assignment/helpers"
-	"github.com/temmy-alex/final-assignment/models"
+	"github.com/ai-azz/task-5-btpns-Aini-Azzah/database"
+	"github.com/ai-azz/task-5-btpns-Aini-Azzah/helpers"
+	"github.com/ai-azz/task-5-btpns-Aini-Azzah/models"
 )
 
 var (
