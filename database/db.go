@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/temmy-alex/final-assignment/models"
+	"github.com/ai-azz/task-5-btpns-Aini-Azzah/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
