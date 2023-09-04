@@ -1,36 +1,50 @@
-package database
+package helpers
 
 import (
-	"fmt"
-	"log"
+	"errors"
+	"strings"
 
-	"github.com/temmy-alex/final-assignment/models"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
-var (
-	host     = "localhost"
-	password = "root"
-	dbPort   = "5432"
-	dbname   = "finalassignment"
-	db       *gorm.DB
-	err      error
-)
+var secretKey = "rahasia"
 
-func StartDB() {
-	config := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", host, user, password, dbname, dbPort)
-	dsn := config
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-
-	if err != nil {
-		log.Fatal("Error connecting to database : ", err)
+func GenerateToken(id uint, email string) string {
+	claims := jwt.MapClaims{
+		"id":    id,
+		"email": email,
 	}
 
-	fmt.Println("Connection success to database")
-	db.Debug().AutoMigrate(models.User{}, models.Photo{})
+	parseToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	signedToken, _ := parseToken.SignedString([]byte(secretKey))
+
+	return signedToken
 }
 
-func GetDB() *gorm.DB {
-	return db
+func VerifyToken(c *gin.Context) (interface{}, error) {
+	errResponse := errors.New("sign in to proceed")
+	headerToken := c.Request.Header.Get("Authorization")
+	bearer := strings.HasPrefix(headerToken, "Bearer")
+
+	if !bearer {
+		return nil, errResponse
+	}
+
+	stringToken := strings.Split(headerToken, " ")[1]
+
+	token, _ := jwt.Parse(stringToken, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errResponse
+		}
+
+		return []byte(secretKey), nil
+	})
+
+	if _, ok := token.Claims.(jwt.MapClaims); !ok && !token.Valid {
+		return nil, errResponse
+	}
+
+	return token.Claims.(jwt.MapClaims), nil
 }
